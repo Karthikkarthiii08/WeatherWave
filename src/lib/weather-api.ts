@@ -22,16 +22,29 @@ async function fetchApi<T>(endpoint: string, params: Record<string, string>): Pr
   const url = `${BASE}/${endpoint}?${buildParams(params)}`;
   
   if (!KEY) {
-    throw new Error("API key is missing. Please check your .env file.");
+    throw new Error("API key is missing. Please check your .env file and restart the dev server.");
   }
   
   try {
     const res = await fetch(url);
-    const data = (await res.json()) as T & { error?: { info: string; type?: string; code?: number } };
+    const data = (await res.json()) as T & { error?: { info: string; type?: string; code?: number }; success?: boolean };
     
     // Check for API errors first (Weatherstack returns 200 even with errors)
-    if (data?.error?.info) {
-      const errorInfo = data.error.info;
+    if (data?.error) {
+      const errorInfo = data.error.info || "Unknown API error";
+      const errorCode = data.error.code;
+      
+      // Handle specific error codes
+      if (errorCode === 101) {
+        throw new Error("Invalid API key. Please check your .env file and restart the dev server.");
+      }
+      if (errorCode === 104) {
+        throw new Error("Monthly API request limit reached. Please upgrade your plan or wait for the limit to reset.");
+      }
+      if (errorCode === 105) {
+        throw new Error("API request limit reached. The free plan allows very limited requests per month.");
+      }
+      
       // Provide more user-friendly error messages
       if (errorInfo.toLowerCase().includes("subscription") || 
           errorInfo.toLowerCase().includes("plan") || 
@@ -39,7 +52,13 @@ async function fetchApi<T>(endpoint: string, params: Record<string, string>): Pr
           errorInfo.toLowerCase().includes("access restricted")) {
         throw new Error(errorInfo);
       }
-      throw new Error(errorInfo || `API Error: ${data.error.type || "Unknown error"}`);
+      
+      throw new Error(errorInfo);
+    }
+    
+    // Check if success is explicitly false
+    if (data?.success === false) {
+      throw new Error("API request failed. Please try again.");
     }
     
     // Check HTTP status
