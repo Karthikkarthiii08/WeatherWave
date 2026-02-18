@@ -12,7 +12,9 @@ A modern, responsive weather application built with React, TypeScript, and Tailw
 
 ## 🚀 Live Demo
 
-Visit the live application: [WeatherWave](https://github.com/Karthikkarthiii08/WeatherWave)
+Visit the live application: [WeatherWave](https://weather-wave.vercel.app)
+
+> **Note**: If you're deploying this app, make sure to set the `VITE_WEATHERSTACK_API_KEY` environment variable in your deployment platform. See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions.
 
 ## 🛠️ Technologies Used
 
@@ -71,6 +73,16 @@ npm run dev
 ## 📱 Screenshots
 
 ![WeatherWave Interface](https://via.placeholder.com/800x400?text=WeatherWave+Interface)
+
+## 🚀 Deployment
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions on deploying to Vercel or Netlify.
+
+**Quick Deploy to Vercel:**
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Karthikkarthiii08/WeatherWave)
+
+Remember to add your `VITE_WEATHERSTACK_API_KEY` environment variable in the Vercel dashboard!
 
 ## 🤝 Contributing
 
